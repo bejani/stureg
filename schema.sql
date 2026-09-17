@@ -12,11 +12,15 @@ CREATE TABLE users (
 CREATE TABLE student_profiles (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   user_id INT UNSIGNED NOT NULL UNIQUE,
+  grade VARCHAR(50), study_field VARCHAR(100), strengths TEXT, difficult_subjects TEXT,
+  academic_goal TEXT, learning_style VARCHAR(100), interests TEXT, current_mood VARCHAR(80),
+  communication_preference VARCHAR(100), study_resources VARCHAR(100), support_request VARCHAR(150), student_note TEXT,
   national_id VARCHAR(20), birth_date DATE, gender VARCHAR(30), address TEXT,
   emergency_contact VARCHAR(150), emergency_phone VARCHAR(30),
   health_notes TEXT, allergies TEXT, counseling_notes TEXT,
   parent_name VARCHAR(150), parent_phone VARCHAR(30), parent_relation VARCHAR(50),
   consent TINYINT(1) NOT NULL DEFAULT 0, consent_at DATETIME NULL,
+  household_status VARCHAR(80), primary_caregiver VARCHAR(150), caregiver_phone VARCHAR(30),
   emergency_flag TINYINT(1) NOT NULL DEFAULT 0,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
