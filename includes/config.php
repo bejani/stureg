@@ -5,6 +5,8 @@ const DB_NAME = 'stureg';
 const DB_USER = 'root';
 const DB_PASS = '';
 const APP_NAME = 'StuReg';
+// When installed at http://localhost/stureg use '/stureg'; use '' at domain root.
+const APP_BASE_PATH = '/stureg';
 const SESSION_NAME = 'stureg_session';
 
 if (session_status() === PHP_SESSION_NONE) {
