@@ -19,8 +19,9 @@ function csrf(): string { if (empty($_SESSION['csrf'])) $_SESSION['csrf'] = bin2
 function check_csrf(): void { if (!hash_equals($_SESSION['csrf'] ?? '', $_POST['csrf'] ?? '')) { http_response_code(419); exit('درخواست نامعتبر است.'); } }
 function flash(?string $message = null): ?string { if ($message !== null) $_SESSION['flash'] = $message; $m = $_SESSION['flash'] ?? null; unset($_SESSION['flash']); return $m; }
 function user(): ?array { return $_SESSION['user'] ?? null; }
-function require_login(?string $role = null): void { $u = user(); if (!$u || ($role && $u['role'] !== $role)) redirect('/login.php'); }
-function require_staff(): void { $u = user(); if (!$u || !in_array($u['role'], ['admin', 'counselor'], true)) redirect('/login.php'); }
+function session_guard(): void { if (user() && !empty($_SESSION['last_activity']) && time() - (int)$_SESSION['last_activity'] > 1800) { $_SESSION=[]; redirect('/login.php'); } if (user()) $_SESSION['last_activity']=time(); }
+function require_login(?string $role = null): void { session_guard(); $u = user(); if (!$u || ($role && $u['role'] !== $role)) redirect('/login.php'); }
+function require_staff(): void { session_guard(); $u = user(); if (!$u || !in_array($u['role'], ['admin', 'counselor'], true)) redirect('/login.php'); }
 function can_view_sensitive(): bool { return user() && user()['role'] === 'admin'; }
 function audit(string $action, string $entityType, ?int $entityId = null, ?string $details = null): void {
     $u = user();

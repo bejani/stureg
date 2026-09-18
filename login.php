@@ -9,7 +9,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
  else{
   $s=db()->prepare('SELECT * FROM users WHERE mobile=? LIMIT 1');$s->execute([$mobile]);$u=$s->fetch();
   if($u && !$u['is_active']){$error='این حساب غیرفعال شده است؛ با مدیر سامانه تماس بگیرید.';}
-  elseif($u && password_verify($_POST['password']??'', $u['password_hash'])){db()->prepare('INSERT INTO login_attempts(mobile,ip_address,was_successful) VALUES(?,?,1)')->execute([$mobile,$ip]);session_regenerate_id(true);$_SESSION['user']=['id'=>$u['id'],'role'=>$u['role'],'name'=>$u['name']];db()->prepare('UPDATE users SET last_login_at=NOW() WHERE id=?')->execute([$u['id']]);audit('login','user',(int)$u['id']);redirect(in_array($u['role'],['admin','counselor'],true)?'/admin/index.php':'/student/index.php');}
+  elseif($u && password_verify($_POST['password']??'', $u['password_hash'])){db()->prepare('INSERT INTO login_attempts(mobile,ip_address,was_successful) VALUES(?,?,1)')->execute([$mobile,$ip]);session_regenerate_id(true);$_SESSION['last_activity']=time();$_SESSION['user']=['id'=>$u['id'],'role'=>$u['role'],'name'=>$u['name']];db()->prepare('UPDATE users SET last_login_at=NOW() WHERE id=?')->execute([$u['id']]);audit('login','user',(int)$u['id']);redirect(in_array($u['role'],['admin','counselor'],true)?'/admin/index.php':'/student/index.php');}
   else{$error='شماره موبایل یا رمز عبور صحیح نیست.';db()->prepare('INSERT INTO login_attempts(mobile,ip_address,was_successful) VALUES(?,?,0)')->execute([$mobile,$ip]);}
  }
 }
