@@ -5,7 +5,7 @@ CREATE TABLE users (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   mobile VARCHAR(20) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
-  role ENUM('student','admin') NOT NULL DEFAULT 'student',
+  role ENUM('student','admin','counselor') NOT NULL DEFAULT 'student',
   name VARCHAR(150) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -19,7 +19,7 @@ CREATE TABLE student_profiles (
   emergency_contact VARCHAR(150), emergency_phone VARCHAR(30),
   health_notes TEXT, allergies TEXT, counseling_notes TEXT,
   parent_name VARCHAR(150), parent_phone VARCHAR(30), parent_relation VARCHAR(50),
-  consent TINYINT(1) NOT NULL DEFAULT 0, consent_at DATETIME NULL,
+  consent TINYINT(1) NOT NULL DEFAULT 0, consent_at DATETIME NULL, consent_education TINYINT(1) NOT NULL DEFAULT 0, consent_health TINYINT(1) NOT NULL DEFAULT 0, consent_contact TINYINT(1) NOT NULL DEFAULT 0, consent_counseling TINYINT(1) NOT NULL DEFAULT 0,
   household_status VARCHAR(80), primary_caregiver VARCHAR(150), caregiver_phone VARCHAR(30),
   emergency_flag TINYINT(1) NOT NULL DEFAULT 0,
   case_status ENUM('new','in_progress','referred','done','closed') NOT NULL DEFAULT 'new',
@@ -32,9 +32,14 @@ CREATE TABLE messages (
   student_id INT UNSIGNED NOT NULL,
   sender_role ENUM('student','admin') NOT NULL,
   body TEXT NOT NULL,
+  category ENUM('general','education','counseling','health','family','urgent') NOT NULL DEFAULT 'general',
+  is_urgent TINYINT(1) NOT NULL DEFAULT 0,
   is_read TINYINT(1) NOT NULL DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE TABLE activity_logs (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, actor_id INT UNSIGNED NULL, action VARCHAR(80) NOT NULL, entity_type VARCHAR(50) NOT NULL, entity_id INT UNSIGNED NULL, details TEXT NULL, ip_address VARCHAR(45) NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (actor_id) REFERENCES users(id) ON DELETE SET NULL, INDEX idx_activity_actor (actor_id), INDEX idx_activity_entity (entity_type,entity_id), INDEX idx_activity_created (created_at)
 );
 CREATE TABLE admin_notes (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

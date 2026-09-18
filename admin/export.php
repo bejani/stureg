@@ -1,6 +1,7 @@
 <?php
 require __DIR__ . '/../includes/functions.php';
 require_login('admin');
+audit('export','students',null,$_GET['format'] ?? 'json');
 
 $format = strtolower($_GET['format'] ?? 'json');
 if (!in_array($format, ['json', 'csv'], true)) {
