@@ -18,7 +18,8 @@ $sql = "SELECT
     p.strengths, p.difficult_subjects, p.academic_goal, p.learning_style,
     p.interests, p.current_mood, p.communication_preference,
     p.study_resources, p.support_request, p.student_note,
-    p.consent, p.consent_at, p.emergency_flag, p.updated_at AS profile_updated_at
+    p.consent, p.consent_at, p.emergency_flag, p.case_status, p.followup_note,
+    p.next_followup_date, p.last_followup_at, p.updated_at AS profile_updated_at
     FROM users u
     LEFT JOIN student_profiles p ON p.user_id = u.id
     WHERE u.role = 'student'

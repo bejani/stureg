@@ -22,6 +22,8 @@ CREATE TABLE student_profiles (
   consent TINYINT(1) NOT NULL DEFAULT 0, consent_at DATETIME NULL,
   household_status VARCHAR(80), primary_caregiver VARCHAR(150), caregiver_phone VARCHAR(30),
   emergency_flag TINYINT(1) NOT NULL DEFAULT 0,
+  case_status ENUM('new','in_progress','referred','done','closed') NOT NULL DEFAULT 'new',
+  followup_note TEXT, next_followup_date DATE, last_followup_at DATETIME,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -33,6 +35,16 @@ CREATE TABLE messages (
   is_read TINYINT(1) NOT NULL DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE TABLE admin_notes (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  student_id INT UNSIGNED NOT NULL,
+  admin_id INT UNSIGNED NOT NULL,
+  body TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_admin_notes_student (student_id)
 );
 -- After creating an admin password hash with: php -r "echo password_hash('ChangeMe!', PASSWORD_DEFAULT), PHP_EOL;"
 -- INSERT INTO users (mobile,password_hash,role,name) VALUES ('09120000000','PASTE_HASH_HERE','admin','مدیر سامانه');
