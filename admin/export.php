@@ -9,6 +9,10 @@ if (!in_array($format, ['json', 'csv'], true)) {
     exit('فرمت خروجی نامعتبر است.');
 }
 
+$where = ["u.role = 'student'"];
+$params = [];
+if (trim($_GET['grade'] ?? '') !== '') { $where[] = 'p.grade = ?'; $params[] = trim($_GET['grade']); }
+if (in_array($_GET['status'] ?? '', ['new','in_progress','referred','done','closed'], true)) { $where[] = 'p.case_status = ?'; $params[] = $_GET['status']; }
 $sql = "SELECT
     u.id AS user_id, u.name, u.mobile, u.created_at AS account_created_at,
     p.grade, p.study_field, p.national_id, p.birth_date, p.gender,
@@ -23,10 +27,10 @@ $sql = "SELECT
     p.next_followup_date, p.last_followup_at, p.updated_at AS profile_updated_at
     FROM users u
     LEFT JOIN student_profiles p ON p.user_id = u.id
-    WHERE u.role = 'student'
+    WHERE " . implode(' AND ', $where) . "
     ORDER BY u.created_at DESC";
-$rows = db()->query($sql)->fetchAll();
-$messages = db()->query("SELECT student_id, sender_role, body, is_read, created_at FROM messages ORDER BY student_id, created_at")->fetchAll();
+$stmt = db()->prepare($sql); $stmt->execute($params); $rows = $stmt->fetchAll();
+$messages = db()->query("SELECT student_id, sender_role, body, category, is_urgent, is_read, created_at FROM messages ORDER BY student_id, created_at")->fetchAll();
 $messages_by_student = [];
 foreach ($messages as $message) {
     $messages_by_student[$message['student_id']][] = $message;
