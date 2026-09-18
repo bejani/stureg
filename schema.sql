@@ -7,7 +7,10 @@ CREATE TABLE users (
   password_hash VARCHAR(255) NOT NULL,
   role ENUM('student','admin','counselor') NOT NULL DEFAULT 'student',
   name VARCHAR(150) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  last_login_at DATETIME NULL,
+  INDEX idx_users_role_active(role,is_active)
 );
 CREATE TABLE student_profiles (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
