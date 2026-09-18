@@ -80,3 +80,15 @@ CREATE TABLE referrals (
 );
 -- After creating an admin password hash with: php -r "echo password_hash('ChangeMe!', PASSWORD_DEFAULT), PHP_EOL;"
 -- INSERT INTO users (mobile,password_hash,role,name) VALUES ('09120000000','PASTE_HASH_HERE','admin','مدیر سامانه');
+-- v2.4 additions
+CREATE TABLE notifications (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, user_id INT UNSIGNED NOT NULL,
+  title VARCHAR(180) NOT NULL, body TEXT NOT NULL, link VARCHAR(255), is_read TINYINT(1) NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_notifications_user(user_id,is_read,created_at)
+);
+CREATE TABLE login_attempts (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY, mobile VARCHAR(20) NOT NULL, ip_address VARCHAR(45),
+  was_successful TINYINT(1) NOT NULL DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_login_attempts_lookup(mobile,ip_address,created_at)
+);

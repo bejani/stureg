@@ -27,6 +27,13 @@ function audit(string $action, string $entityType, ?int $entityId = null, ?strin
     db()->prepare('INSERT INTO activity_logs(actor_id,action,entity_type,entity_id,details,ip_address) VALUES(?,?,?,?,?,?)')
         ->execute([$u['id'] ?? null, $action, $entityType, $entityId, $details, $_SERVER['REMOTE_ADDR'] ?? null]);
 }
-function layout_start(string $title): void { $u = user(); ?><!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><?=e($title)?> | <?=APP_NAME?></title><link rel="stylesheet" href="<?=e(url('/assets/style.css'))?>"></head><body><header><div class="wrap nav"><a class="brand" href="<?=e(url('/'))?>">StuReg</a><?php if($u): ?><span><?=e($u['name'])?></span><a href="<?=e(url('/logout.php'))?>">خروج</a><?php endif; ?></div></header><main class="wrap"><?php if($m=flash()): ?><div class="alert success"><?=e($m)?></div><?php endif; ?><?php }
+function notify(int $userId, string $title, string $body, ?string $link = null): void {
+    db()->prepare('INSERT INTO notifications(user_id,title,body,link) VALUES(?,?,?,?)')->execute([$userId,$title,$body,$link]);
+}
+function unread_notifications(): int {
+    $u = user(); if (!$u) return 0;
+    $q = db()->prepare('SELECT COUNT(*) FROM notifications WHERE user_id=? AND is_read=0'); $q->execute([$u['id']]); return (int)$q->fetchColumn();
+}
+function layout_start(string $title): void { $u = user(); ?><!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title><?=e($title)?> | <?=APP_NAME?></title><link rel="stylesheet" href="<?=e(url('/assets/style.css'))?>"></head><body><header><div class="wrap nav"><a class="brand" href="<?=e(url('/'))?>">StuReg</a><?php if($u): ?><span><?=e($u['name'])?></span><a href="<?=e(url('/notifications.php'))?>">اعلان‌ها<?php if(($n=unread_notifications())>0):?> <span class="badge"><?=$n?></span><?php endif;?></a><a href="<?=e(url('/logout.php'))?>">خروج</a><?php endif; ?></div></header><main class="wrap"><?php if($m=flash()): ?><div class="alert success"><?=e($m)?></div><?php endif; ?><?php }
 function layout_end(): void { ?></main><footer><div class="wrap">اطلاعات شما محرمانه است و فقط با رضایت شما برای پشتیبانی و ارتباط آموزشی استفاده می‌شود.</div></footer></body></html><?php }
 ?>
