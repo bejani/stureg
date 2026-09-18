@@ -14,7 +14,7 @@
 
 1. PHP 8.1+، MySQL 5.7+/MariaDB و وب‌سرور Apache نصب کنید.
 2. دیتابیس را بسازید: `mysql -u root -p < schema.sql`
-3. در صورت نیاز مقادیر `includes/config.php` را تغییر دهید. برای سرور واقعی بهتر است این فایل خارج از web root نگه‌داری شود.
+3. فایل `includes/config.local.example.php` را با نام `includes/config.local.php` کپی کنید و مقادیر محیط خود را در آن قرار دهید. فایل `config.local.php` در `.gitignore` است و نباید وارد GitHub شود.
 4. اگر پروژه در آدرس `http://localhost/stureg` اجرا می‌شود، مقدار پیش‌فرض `APP_BASE_PATH` در `includes/config.php` درست است. اگر پروژه مستقیماً در ریشه دامنه نصب شد، آن را به `''` تغییر دهید.
 5. رمز هش‌شده‌ی مدیر بسازید: `php -r "echo password_hash('رمز-قوی', PASSWORD_DEFAULT), PHP_EOL;"`
 6. دستور INSERT کامنت‌شده در `schema.sql` را با هش تولیدشده اجرا کنید. برای هر دانش‌آموز نیز یک رکورد در جدول `users` بسازید؛ نقش باید `student` باشد.
@@ -22,7 +22,9 @@
 
 ## انتقال به InfinityFree
 
-فایل‌ها را در `htdocs` آپلود کنید، دیتابیس و کاربر MySQL را در کنترل‌پنل بسازید، `schema.sql` را از طریق phpMyAdmin وارد کنید و مقادیر اتصال را مطابق اطلاعات InfinityFree تنظیم کنید. برای نصب در ریشه دامنه، `APP_BASE_PATH` را در `includes/config.php` روی `''` بگذارید.
+فایل‌ها را در `htdocs` آپلود کنید، دیتابیس و کاربر MySQL را در کنترل‌پنل بسازید و `schema.sql` را از طریق phpMyAdmin وارد کنید. سپس `includes/config.local.example.php` را روی کامپیوتر به `includes/config.local.php` کپی کنید، مقادیر اتصال InfinityFree را وارد کنید و همین فایل را جداگانه در `htdocs/includes/` آپلود کنید. در InfinityFree مقدار `app_env` باید `production` و `app_base_path` باید `''` باشد. فایل `config.local.php` نباید در GitHub commit شود.
+
+فایل `includes/config.php` عمومی و مشترک باقی می‌ماند؛ بنابراین اجرای `git pull` تنظیمات دیتابیس محلی یا InfinityFree را بازنویسی نمی‌کند. اگر `config.local.php` وجود نداشته باشد، مقادیر پیش‌فرض برای Laragon با دیتابیس `stureg` و کاربر `root` استفاده می‌شوند.
 
 ## به‌روزرسانی فرم شناخت دانش‌آموز
 
