@@ -55,7 +55,7 @@ layout_start('پنل مدیریت');
 ?>
 <div class="page-head">
     <div><p class="eyebrow">پنل مدیریت</p><h1>دانش‌آموزان</h1></div>
-    <span class="badge"><?= e($students->rowCount()) ?> نفر</span>
+    <div class="admin-actions"><span class="badge"><?= e($students->rowCount()) ?> نفر</span><a class="button secondary" href="<?= e(url('/admin/export.php?format=csv')) ?>">خروجی Excel</a><a class="button secondary" href="<?= e(url('/admin/export.php?format=json')) ?>">پشتیبان JSON</a></div>
 </div>
 
 <?php if ($form_error): ?>
