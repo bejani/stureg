@@ -5,8 +5,10 @@ const DB_NAME = 'stureg';
 const DB_USER = 'root';
 const DB_PASS = '';
 const APP_NAME = 'StuReg';
-// When installed at http://localhost/stureg use '/stureg'; use '' at domain root.
-const APP_BASE_PATH = '/stureg';
+// Automatically supports http://localhost/stureg and a domain-root deployment on InfinityFree.
+$script_path = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
+$app_base_path = (strpos($script_path, '/stureg/') === 0 || $script_path === '/stureg') ? '/stureg' : '';
+define('APP_BASE_PATH', $app_base_path);
 const SESSION_NAME = 'stureg_session';
 
 if (session_status() === PHP_SESSION_NONE) {
